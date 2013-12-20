@@ -1,4 +1,11 @@
-package net.snowdoggy.dognet;
+package net.snowdoggy.android.dognet;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.annotation.TargetApi;
 import android.app.ActionBar;
@@ -13,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import net.snowdoggy.android.dognet.R;
 
 public class MapActivity extends FragmentActivity implements ActionBar.OnNavigationListener {
 
@@ -21,7 +29,17 @@ public class MapActivity extends FragmentActivity implements ActionBar.OnNavigat
      * current dropdown position.
      */
     private static final String STATE_SELECTED_NAVIGATION_ITEM = "selected_navigation_item";
-
+    
+    /**
+     * This is the Google map instance
+     */
+    private GoogleMap map;
+    
+    /**
+     * Linda's Seabreeze Cafe' -- from http://www.earthpoint.us/convert.aspx
+     */
+    static final LatLng LINDAS_CAFE = new LatLng(36.9683000, -122.0078167);
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +63,18 @@ public class MapActivity extends FragmentActivity implements ActionBar.OnNavigat
                                 getString(R.string.title_section3),
                         }),
                 this);
+        
+        // Set up the map:
+        map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
+        		.getMap();
+        Marker lindas = map.addMarker(new MarkerOptions().position(LINDAS_CAFE)
+        		.title("Linda's"));
+        
+        // Move camera instantly to Linda's with  zoom of 15
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(LINDAS_CAFE, 15));
+        
+        // Zoom in, animating the camera
+        map.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
     }
 
     /**
